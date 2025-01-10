@@ -1,0 +1,38 @@
+name: Build and Deploy Jekyll
+
+# Questo trigger farà partire il processo di build ad ogni push sul branch main
+on:
+  push:
+    branches:
+      - main  # Usa il tuo branch principale, di solito "main" o "master"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Esegui il job su un ambiente Ubuntu
+
+    steps:
+      # Step 1: Checkout del codice dal repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Ruby (installa la versione di Ruby necessaria)
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'  # Specifica la versione di Ruby (modifica se necessario)
+          bundler-cache: true  # Aggiunge caching per velocizzare i build successivi
+
+      # Step 3: Installa le dipendenze con Bundler (le gemme nel Gemfile)
+      - name: Install dependencies
+        run: bundle install
+
+      # Step 4: Costruisci il sito Jekyll (compila i contenuti nel formato statico)
+      - name: Build the site
+        run: bundle exec jekyll build
+
+      # Step 5: Deploy del sito su GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}  # Usa il token di GitHub per l'accesso
+          publish_dir: ./_site  # La cartella in cui Jekyll scrive il sito generato
