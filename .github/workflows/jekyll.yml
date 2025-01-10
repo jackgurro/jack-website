@@ -21,6 +21,9 @@ jobs:
         with:
           ruby-version: '3.3'  # Specifica la versione di Ruby (modifica se necessario)
           bundler-cache: true  # Aggiunge caching per velocizzare i build successivi
+      # Step 3: Disabilita la modalità frozen
+      - name: Disable frozen mode
+        run: bundle config set frozen false
 
       # Step 3: Installa le dipendenze con Bundler (le gemme nel Gemfile)
       - name: Install dependencies
